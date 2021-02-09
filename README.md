@@ -4,5 +4,5 @@
 
 주요 관심사
 
-C, Java, Go, Swift, Linux, Python, DS, Algo, etc.
+C, Java, Go, Swift, Python, Linux, DS, Algo, etc.
 
