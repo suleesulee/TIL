@@ -1,0 +1,1 @@
+var grades = {'su':10, 'sulee':5, 'intro': 6}
