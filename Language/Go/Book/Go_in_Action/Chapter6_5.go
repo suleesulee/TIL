@@ -28,7 +28,7 @@ value := <- buff
 두 고루틴이 같은 시점에 준비되어 있지 않다면 대기작업을 시작
 그러면 고루틴은 필요한 작업을 수행할 수 없다
 */
-
+/*
 package main
 
 import (
@@ -81,8 +81,73 @@ func player(name string, court chan int) {
 		court <- ball
 	}
 }
+*/
+/*
+버퍼가 있는 채널
+고루틴이 값을 받아가기 전까지 채널에 보관할 수 있는 값의 개수를 저장 가능함
+보내고 받는 동작이 동시에 이루어지지 않아도 됨
+값을 받는 작업의 작업은 채널내 받을 값이 없을 때만 실행됨
+값을 보내는 작업의 작업은 채널 내 버퍼가 가득 찼을때 실행
+버퍼가 없는 채널은 값을 보내고 받는 동작이 동시에 이루어지는 것을 보장하지만 버퍼가 있는 채널은 보장 안함
+*/
 
-/**/
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+const (
+	numberGoroutines = 4
+	taskLoad         = 10
+)
+
+var wg sync.WaitGroup
+
+func init() {
+	rand.Seed(time.Now().Unix())
+}
+
+func main() {
+	tasks := make(chan string, taskLoad)
+
+	wg.Add(numberGoroutines)
+	for gr := 1; gr <= numberGoroutines; gr++ {
+		go worker(tasks, gr)
+	}
+
+	for post := 1; post <= taskLoad; post++ {
+		tasks <- fmt.Sprintf("Work: %d", post)
+	}
+
+	close(tasks)
+	//채널이 닫혀도 각 고루틴들은 더 이상 받을 값이 없을때까지 계속 값을 받음
+
+	wg.Wait()
+}
+
+func worker(tasks chan string, worker int) {
+	defer wg.Done()
+
+	for { //무한루프 while(1)
+		task, ok := <-tasks //채널에서 실행할 작업을 받는 작업을 수행하는 동안 잠금 상태
+		if !ok {            //ok 플래그를 검사하여 채널이 비었거나 닫혔는지 확인 true는 채널에서 받은 값이 유효한 값이라고 판단함. false는 종료
+			fmt.Printf("Worker: %d : terminated\n", worker)
+			return
+		}
+
+		fmt.Printf("Worker: %d : Start work: %s\n", worker, task)
+
+		sleep := rand.Int63n(100)
+		time.Sleep(time.Duration(sleep) * time.Millisecond)
+
+		fmt.Printf("Worker: %d : Work Complite: %s\n", worker, task)
+	}
+}
+
 /**/
 /**/
 /**/
