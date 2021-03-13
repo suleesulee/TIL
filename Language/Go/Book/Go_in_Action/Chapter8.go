@@ -76,10 +76,136 @@ iota 키워드는 상수 블록을 선언할 때 사용하는 특별한 키워�
 코드 블록의 끝에 도달하거나 대입 구문이 발견될 때까지 동일한 표현식을 매 상수마다 중복해서 적용할 것을 컴파일러에 지시
 iota 키워드의 기본 값을 0으로 하되 상수를 정의할 떄마다 1씩 증가시킴
 
+const {
+	Ldate = 1 << iota   // 1<<0 00000001
+	Ltime = 			// 1<<1 00000010
+	Lmicroseconds		// 1<<2 00000100
+	....
+}
+
+
+비트연산으로 왼쪽으로 이동.
+독자적인 플래그로써 동작할수있게함
+
+LstdFlags = Ldate(1) | Ltime(2) = 00000011 = 3
+
+LstdFlags를 정의하면 iota 체인의 사용은 중단됨
+
+
+log.SetFlags(log.Ldate |log. Lmicroseconds | log.Llongfile)
+
+형식화 하는 버전은
+ln 대신 f 붙은 함수이름
+
+고루틴 간에도 안전하게 활용가능
+여러 고루틴이 동일 로거에서 함수를 동시에 호출해도 간섭이 발생하지 않음
 */
 
-/**/
-/**/
+/*
+사용자정의 로거도 생성가능하다
+Logger타입을 직접 생성해야 하고
+출력장치, 접두어, 플래그를 성정해줘야함
+*/
+
+var (
+	Trace   *log.Logger
+	Info    *log.Logger
+	Warning *log.Logger
+	Error   *log.Logger
+)
+
+//로거의 중요도에 따라 다르게 설정
+
+Trace = log.New(ioutil.Discard, "Trace: ", log.Ldate | log.Ltime | log.Lshortfile)
+Error = log.New(os.Stdout, "Error:" ,  log.Ldate)
+//log 패키지의 New 함수를 호출
+
+//원형
+func New(out io.Writer, prefix string, flag int) *Logger {
+	return &Logger{out: out, prefix: prefix, flag: flag}
+}
+
+//log는 표준 라이브러리를 사용하라 고퍼들 대부분이 사용한다
+
+
+/*
+인코딩 디코딩
+
+XML보다 JSON으로 데이터를 다루는 것이 요즘 트렌드
+더 적은 마크업을 사용하기 때문에 적은 양의 데이터로 동일 내용을 표현 가능함
+*/
+
+
+type (
+	gResult struct {
+		URL string 'json:"url"'
+		Title string 'json:"title"'
+		Content string 'json:"content"'
+		....
+	}
+	
+	gRespose struct{
+		ResData struct{
+			Res []gResult 'json:"results'
+		} 'json:"responseData'
+	}
+)
+
+'json:"ex"'
+//태그라고 함 JSON문서와 구조체 타입 간의 필드 매핑을 위한 메타데이터
+
+var gr gRespose
+err = json.NewDecoder(resp.Body).Decode(&gr)
+
+fmt.Print(gr)
+
+
+
+
+func NewDecoder (r io.Reader) *Decoder
+//Decoder 타입의 포인터를 리턴
+
+func (dec *Decoder) Decode(v interface{}) error
+//빈 인터페이스는 모든 타입이 구현하는 인터페이스 어떠한 타입이라도 받아들일 수 있음
+//Decode 메서드는 리플렉션을 통해 파라메타의 정보를 파악해서 지정된 타입으로 디코딩 해줌
+
+//JSON문서의 문자열 값은 문자열 바이트 슬라이스로 변환후 json 패키지의 Unmarshal함수를 사용
+
+var JSON_EX = '{ "test": "mar", "test2": "shal", "test3": {"tt": "aa", "dd" : "ee"}}'
+
+func ex(){	
+	var m MarEx
+	//var m map[string]interface{}
+	err := json.Unmarshal([]byre(JSON_EX), &m)
+	if err != nil {
+		...s
+	}
+}
+
+
+//fmt.Println("test3:", m["test3"].(map[string]interface{})["tt"])
+//위와 같이 맵을 이용해서 디코딩도 가능하다
+
+m := make(map[string]interface{})
+/*
+{key: string, value: 모든타입}으로 구성된 map
+*/
+
+data, err := json.MarshalIndent(m, "", "   ")
+if err != nil {
+	log.Println("err", err)
+	return
+}
+
+func MarshalIndent(v interface{}, prefix, indent string)([]byte, error){....}
+
+//해당 함수는 빈 인터페이스를 사용라며 리플렉션을 통해 맵타입 JSON 문자열로 변환
+
+
+
+//GO에서 JSON, XML을 사용할땐 표준라이브러리를 쓰자
+//매우 잘 구현되어있으며 속도도 빠르다.
+
 /**/
 /**/
 /**/
