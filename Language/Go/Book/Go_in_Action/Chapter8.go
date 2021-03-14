@@ -207,9 +207,36 @@ func MarshalIndent(v interface{}, prefix, indent string)([]byte, error){....}
 //매우 잘 구현되어있으며 속도도 빠르다.
 
 /**/
-/**/
-/**/
-/**/
+/*
+UNIX 기반 운영체제는 한프로그램의 출력을 다른프로그램의 입력으로 사용가능
+
+go는 io.Writer, io.Reader 인터페이스가 제공하는 추상화덕분에 
+io패키지에 구성된 함수와 메서드는 데이터의 타입, 읽고 쓰는 방법에 신경을 쓰지 않음
+
+type Writer interface{
+	Write(p []byte) (n int, err error)
+}
+
+전달된 바이트 슬라이스의 전체를 출력해야함
+작업에 실패하면 반드시 에러 리턴
+출력된 바이트의 길이는 슬라이스의 길이보다 작을 수 있지만 더 많아서는 안됨
+*/
+
+/*
+type Reader interface{
+	Read(p []byte) (n int, err error)
+}
+
+첫번쨰 리턴값은 읽어들인 바이트의 길이
+두번째는 에러값
+
+읽은 바이트가 0일때 nil 리턴 금지
+아무것도 하지 않은 상황으로 간주해야함
+*/
+/*
+표준라이브러리를 잘 관찰하면 Go 디자이너들이 패키지와 API를 작성하는 방식 또한 이해가능
+
+*/
 /**/
 /**/
 /**/
