@@ -10,15 +10,15 @@ class Solution:
         :type n: int
         :rtype: int
         """
-        l = 0
-        r = n-1
+        l = 1
+        r = n
         
-        while l <= r:
-            mid = l + (r-l) // 2
+        while l < r:
+            mid = (l + r) // 2
 
             if isBadVersion(mid)==False:
                 l = mid + 1
             else:
-                r = mid - 1
+                r = mid
                 
         return l
