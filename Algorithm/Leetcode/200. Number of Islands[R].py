@@ -28,3 +28,36 @@ class Solution:
                                 grid[nx][ny] = '-1'
                     ans += 1
         return ans
+
+#DFS
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        if not grid:
+            return 0
+        
+        m, n = len(grid), len(grid[0])
+        ans = 0
+        
+        def dfs(x, y):
+            nonlocal n, m
+            
+            if grid[x][y] == '-1':
+                return 0
+            
+            grid[x][y] = '-1'
+            if 0<=x-1<m and grid[x-1][y] == '1':
+                dfs(x-1, y)
+            if 0<=y-1<n and grid[x][y-1] == '1':
+                dfs(x, y-1)
+            if 0<=x+1<m and grid[x+1][y] == '1':
+                dfs(x+1, y)
+            if 0<=y+1<n and grid[x][y+1] == '1':
+                dfs(x, y+1)
+        
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1':
+                    dfs(i, j)
+                    ans+= 1
+
+        return ans
