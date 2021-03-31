@@ -16,9 +16,6 @@ class Solution:
                 mapping[i[0]].append(i[1])
             else:
                 mapping[i[0]] = [i[1]]
-                
-        #print(mapping)
-        
         
         for i, j in mapping.items():
             j.sort(reverse=True)
