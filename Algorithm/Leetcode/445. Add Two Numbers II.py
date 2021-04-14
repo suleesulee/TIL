@@ -5,6 +5,13 @@
 #         self.next = next
 class Solution:
     def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        if not l1 and not l2:
+            return
+        elif not l1:
+            return l2
+        elif not l2:
+            return l1
+        
         l1_list = []
         l2_list = []
         
@@ -22,14 +29,15 @@ class Solution:
         ans_list = list(str(ans))
         #print(ans_list)
         
-        nNode = ListNode()
-        head = nNode
-        for i in ans_list:
-            nNode.val = i
-            n = ListNode()
-            nNode.next = n
-            nNode = n
+        n_node = ListNode()
+        head = n_node
+        for i in range(len(ans_list)):
+            n_node.val = ans_list[i]
+            if len(ans_list)-1 != i:
+                n = ListNode()
+                n_node.next = n
+                n_node = n_node.next
+           # print(head)
             
-        print(head)
-        
+
         return head
