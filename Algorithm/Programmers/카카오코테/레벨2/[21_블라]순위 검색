@@ -1,0 +1,66 @@
+import collections
+import itertools
+def solution(info, query):
+    answer = []
+    info_d = collections.defaultdict(list)
+    
+    for i in info:
+        i = i.split()
+        info_key = i[:-1]
+        info_val = int(i[-1])
+        for j in range(5):
+            for c in itertools.combinations(info_key, j):
+                temp_key = ''.join(c)
+                info_d[temp_key].append(info_val)
+                    
+    for value in info_d.values():
+        value.sort()
+
+    print(info_d)
+    
+    for q in query:
+        qu = q.split(' ')
+        query_val = int(qu[-1])
+        qu = qu[:-1]
+        for i in range(3):
+            qu.remove('and')
+        while '-' in qu:
+            qu.remove('-')
+
+        tmp_q = ''.join(qu)
+        #print(tmp_q)
+        
+        if tmp_q in info_d:
+            sc = info_d[tmp_q]
+            if sc:
+                s = 0
+                e = len(sc)
+                while e > s:
+                    mid = (s+e) // 2
+                    if sc[mid] >= query_val:
+                        e = mid
+                    else:
+                        s = mid + 1
+                answer.append(len(sc) - s)
+        else:
+            answer.append(0)
+    return answer
+
+'''
+정확성만 생각해서 완탐을 돌리면 무조건 효율성을 통과 못하는 문제
+딕셔너리의 key 값으로 어떻게 만들어내는가가 주된 문제였고
+이진탐색을 통해 탐색범위를 줄이지 못해도 효율성 통과가 되지않았음
+
+문제의 접근
+일단 완탐하면 전체적인 정답을 맞출 수 없음
+무조건 해시로 풀어야하는데 어떻게 해야 key, value를 맞춰서 검색할수 있을까를 알아내면됨
+조합을 돌려서 저걸... 만들어 낸뒤 value는 코딩테스트 점수로..
+그리고 나서 
+query 부분을 변형하고
+이진탐색을 돌려야한다는 것까지 생각했다면 문제를 풀수있음....
+
+
+
+
+
+'''
