@@ -10,6 +10,9 @@ def union_parent(parent, a, b):
         parent[b] = a
     else:
         parent[a] = b
+
+
+
         
 v, e = map(int, input().split())
 parent = [0] * (v+1)
