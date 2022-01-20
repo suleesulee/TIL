@@ -32,7 +32,7 @@ if __name__ == "__main__":
 			else:
 				l = mid + 1
 			
-		print(r)
+		print(mid)
 			
 '''
 이진탐색 잘 구현해놓고 
