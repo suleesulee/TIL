@@ -1,38 +1,36 @@
 import sys
-
 input = sys.stdin.readline
 
 if __name__ == "__main__":
     n, m = map(int, input().split())
-    ans = 0
     before_sector = 0
-
-#   [0 50] [50 90] [90 100] 
-#   [50][40][30]
-    
     sector = []
-    speed = []
 
     for i in range(n):
         temp = list(map(int, input().split()))
-        if i == 0:
-            sector.append([0, temp[0]])
-        elif i == n-1:
-            sector.append([sector[-1][1], 100])
-        else:
-            sector.append([sector[-1][1], sector[-1][1] + temp[0]])
-
-        speed.append(temp[1])
-
-    for _ in range(m):
-        temp = list(map(int, input().split()))
+        for j in range(before_sector, before_sector + temp[0]):
+            sector.append(temp[1])
         before_sector += temp[0]
-        print(before_sector)
-        for i in range(len(sector)):
-            if sector[i][0]<=before_sector<=sector[i][1]:
-                if temp[1] > speed[i]:
-                    over_speed = temp[1] - speed[i]
-                    ans = max(ans, over_speed)
+            
+    #print(sector)
 
+    before_sector = 0
+    for i in range(m):
+        temp = list(map(int, input().split()))
+        for j in range(before_sector, before_sector + temp[0]):
+            sector[j] = temp[1] - sector[j]
+        before_sector += temp[0]
+
+    #print(sector)
     
-    print(ans)
+    if max(sector) <= 0:
+        print(0)
+    else:
+        print(max(sector))
+        
+'''
+한참 해멤
+구간나누는거 하지않고 그냥 0-100까지 속도 리스트에 넣고
+운영속도 빼줘서 최대 값 구해내면됨
+-만 나오게 되면 0으로 예외처리
+'''
